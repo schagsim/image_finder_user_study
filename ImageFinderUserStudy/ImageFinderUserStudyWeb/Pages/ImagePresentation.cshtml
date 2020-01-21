@@ -1,0 +1,20 @@
+@page
+@model ImageFinderUserStudyWeb.Pages.ImagePresentation
+
+@{
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="text-center">
+    <h2>
+        Remember this image!
+    </h2>
+    <img 
+        src="http://herkules.ms.mff.cuni.cz/lineit/20k_images/images/v00002_s00062(f004514-f004638)_g00096_f004585.jpg"
+        style="height:500px;width:700px;"
+        alt="Image not found."
+    />
+    <form method="get">
+        <button type="submit" asp-page="ImageGallery">I want to try finding this image in a gallery!</button>
+    </form>
+</div>
