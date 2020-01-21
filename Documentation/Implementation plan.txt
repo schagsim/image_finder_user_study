@@ -1,0 +1,8 @@
+This document will describe the plan how to incrementally build this software (Image finder - user study).
+It is supposed to mimic an agile approach to project developments.
+
+1) As a user, I want to be able to go through basic flow of the user study
+    - Start at "home page"
+    - Be navigated to the page where an image is presented
+    - Be navigated to the page where the image gallery is presented (part of the image gallery is a button "not present")
+    - After clicking a button, I want to be redirected to the final page.
