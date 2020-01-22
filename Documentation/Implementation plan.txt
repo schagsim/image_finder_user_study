@@ -1,6 +1,7 @@
 This document will describe the plan how to incrementally build this software (Image finder - user study).
 It is supposed to mimic an agile approach to project developments.
 
+---User---
 1) As a user, I want to be able to go through basic flow of the user study
     - Start at "home page"
     - Be navigated to the page where an image is presented
@@ -10,3 +11,20 @@ It is supposed to mimic an agile approach to project developments.
 
 2) As a user, I want to view info about the web at "About" page
 3) As a user, I want to be able to read Privacy notes about which data the image finder collects about me
+
+---Researcher---
+1) As a researcher, I want to collect users' session data to see whether the user has found the presented image
+    - Create Session holder class which will collect users' sessions
+    - To these sessions, save presented image ID
+    - To these sessions, save on what the user clicked (ID or "not-present")
+    - Serialize the sessions to json and save it locally after the user selects their image
+        - This serialization will contain
+            1) Whether the user found the presented image (boolean)
+            2) Presented image ID
+            3) Selected image ID (or "not-present" string in case the user thinks the image is not present in the gallery)
+        - The serialization output might be a subset of what is collected in the actual session.
+            - Create another object with only the fields that actually interest the researcher
+
+2) As a researcher, I want to able to review how long it had taken the user to answer (click on something in the gallery).
+    - Will be in the session output
+    - Will have to be collected in the session
