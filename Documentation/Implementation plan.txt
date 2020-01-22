@@ -5,4 +5,8 @@ It is supposed to mimic an agile approach to project developments.
     - Start at "home page"
     - Be navigated to the page where an image is presented
     - Be navigated to the page where the image gallery is presented (part of the image gallery is a button "not present")
-    - After clicking a button, I want to be redirected to the final page.
+    - After clicking either the "not present" button or any image, I want to be redirected to the final page.
+    - I will always be brought to home page after clicking the "Image finder" link
+
+2) As a user, I want to view info about the web at "About" page
+3) As a user, I want to be able to read Privacy notes about which data the image finder collects about me
