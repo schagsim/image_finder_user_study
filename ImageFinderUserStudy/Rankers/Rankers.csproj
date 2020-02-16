@@ -9,8 +9,4 @@
       <Compile Remove="Parsers\IParser.cs" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Parsers" />
-    </ItemGroup>
-
 </Project>
