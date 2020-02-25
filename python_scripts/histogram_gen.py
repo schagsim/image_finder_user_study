@@ -49,14 +49,7 @@ def normalize_histogram(
         histogram.astype(numpy.float32),
         numpy.sum(histogram).astype(numpy.float32)
     ).astype(numpy.float32)
-    """
-    hist_normalized = []
-    for range_value in histogram[0]:
-        hist_normalized.append(
-            range_value[0] / number_of_pixels
-        )
-    return hist_normalized
-    """
+
 
 def extract_values_from_histogram(histogram) -> List[numpy.float32]:
     extracted_values = []
