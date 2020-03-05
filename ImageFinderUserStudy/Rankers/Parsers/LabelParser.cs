@@ -24,7 +24,10 @@ namespace Rankers.Parsers
                 try
                 {
                     var labelsFile = File.ReadAllText($"{labelFileName}");
-                    currentLabelsFile = Regex.Split(labelsFile, "(, \")|(,\")").Select(x => x.Trim(new char[] { '"', '{', '}', ',' })).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                    currentLabelsFile = Regex.Split(labelsFile, "(, \")|(,\")")
+                        .Select(x => x.Trim(new char[] { '"', '{', '}', ',' }))
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .ToArray();
                 }
                 catch (Exception)
                 {
@@ -44,7 +47,12 @@ namespace Rankers.Parsers
                     double.TryParse(splitLabel[1], out double labelVal);
                     currentLabels.Add(splitLabel[0], labelVal);
                 }
-                parsedImageLabels.Add(new ImageLabels(Path.GetFileNameWithoutExtension(labelFileName), currentLabels));
+                parsedImageLabels.Add(
+                    new ImageLabels(
+                            Path.GetFileNameWithoutExtension(labelFileName),
+                            currentLabels
+                        )
+                    );
                 NEXT:;
             }
 

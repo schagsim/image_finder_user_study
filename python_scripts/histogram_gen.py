@@ -128,10 +128,10 @@ for file_path in google_image_files:
     red_normalized_values = _extract_values_from_histogram(red_hist)
 
     output = {
-        "id": id,
-        "blue_histogram": blue_normalized_values,
-        "green_histogram": green_normalized_values,
-        "red_histogram": red_normalized_values,
+        "ImageId": id,
+        "BlueHistogram": blue_normalized_values,
+        "GreenHistogram": green_normalized_values,
+        "RedHistogram": red_normalized_values,
     }
     json_output = json.dumps(output)
     file_stream.write(json_output)

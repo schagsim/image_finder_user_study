@@ -8,13 +8,13 @@ namespace Rankers
     /// </summary>
     public class ImageLabels
     {
-        public string ImageId { get; private set; }
-        public Dictionary<string, double> LabelValues { get; private set; }
+        public string ImageId { get; }
+        public Dictionary<string, double> LabelValues { get; }
 
-        public ImageLabels(string imageId, Dictionary<string, double> labelvalues)
+        public ImageLabels(string imageId, Dictionary<string, double> labelValues)
         {
             ImageId = imageId;
-            LabelValues = labelvalues;
+            LabelValues = labelValues;
         }
     }
 }
