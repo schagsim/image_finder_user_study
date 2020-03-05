@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace Rankers.Parsers
 {
-    public class ColorHistogramParser
+    public static class ColorHistogramParser
     {
         public static List<ColorHistogram> ReadAndParseColorHistograms(string pathToHistogramsFolder)
         {

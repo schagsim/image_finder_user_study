@@ -1,23 +1,29 @@
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Rankers
 {
+    [DataContract]
     public class ColorHistogram
     {
+        [DataMember]
         public string ImageId { get; }
         
-        public Dictionary<string, double> BlueHistogram { get; }
+        [DataMember]
+        public List<double> BlueHistogram { get; }
         
-        public Dictionary<string, double> GreenHistogram { get; }
+        [DataMember]
+        public List<double> GreenHistogram { get; }
         
-        public Dictionary<string, double> RedHistogram { get; }
+        [DataMember]
+        public List<double> RedHistogram { get; }
 
         public ColorHistogram
         (
             string imageId,
-            Dictionary<string, double> blueHistogram,
-            Dictionary<string, double> greenHistogram,
-            Dictionary<string, double> redHistogram
+            List<double> blueHistogram,
+            List<double> greenHistogram,
+            List<double> redHistogram
         )
         {
             ImageId = imageId;
