@@ -354,3 +354,5 @@ ImageFinderUserStudy/.idea/
 ImageFinderUserStudy/ImageFinderUserStudyWeb/wwwroot/Resources/
 
 python_scripts/*.txt
+
+python_scripts/test_files/
