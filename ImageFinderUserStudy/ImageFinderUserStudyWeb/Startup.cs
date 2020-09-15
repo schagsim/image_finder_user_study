@@ -34,8 +34,10 @@ namespace ImageFinderUserStudyWeb
                 galleryHeight,
                 scrollBarPixels
             );
+            var userSessionsManager = new UserSessionsManager();
 
             services.AddSingleton(globalConfig);
+            services.AddSingleton(userSessionsManager);
             
             services.AddRazorPages();
         }
