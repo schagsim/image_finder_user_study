@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ImageFinderUserStudyWeb
 {
+    /// <summary>
+    /// This session summary is a different class from UserSession because not all the data in the user session
+    /// 1) Are in the correct format
+    /// 2) Are going to be relevant in the summary.
+    /// </summary>
     public class SessionSummary
     {
         public Guid UserSessionId { get; }
