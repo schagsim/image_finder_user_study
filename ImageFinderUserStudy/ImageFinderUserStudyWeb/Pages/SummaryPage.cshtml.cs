@@ -27,7 +27,10 @@ namespace ImageFinderUserStudyWeb.Pages
                 UserSession = _userSessionsManager.UserSessions[userSessionId];
                 var filePath = "userSessions/" + UserSession.UserSessionId + ".json";
                 // TODO: We will later move this to DB instead of file output so it can be queried.
-                System.IO.File.WriteAllText(filePath, JsonConvert.SerializeObject(UserSession));
+                System.IO.File.WriteAllText(
+                    filePath,
+                    JsonConvert.SerializeObject(new SessionSummary(UserSession))
+                );
             }
             catch (KeyNotFoundException e)
             {
