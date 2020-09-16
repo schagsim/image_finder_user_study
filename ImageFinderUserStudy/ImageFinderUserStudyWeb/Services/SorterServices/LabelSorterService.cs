@@ -59,9 +59,35 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
 
             return parsedImageLabels;
         }
-        
-        public SortersDtos.SorterOutput SortLabels(int numberOfImagesToPresent)
+
+        private List<ImageLabels> selectRandomImages(
+            int numberOfImagesToPresent,
+            List<ImageLabels> imageLabels
+        )
         {
+            throw new NotImplementedException();
+        }
+        
+        public SortersDtos.SorterOutput SortLabels(
+            int numberOfImagesToPresent,
+            double probabilityOfPresentedImageInGallery,
+            List<ImageLabels> imageLabels
+        )
+        {
+            if (numberOfImagesToPresent < 0 || numberOfImagesToPresent > imageLabels.Count)
+            {
+                throw new ArgumentException(
+                    $"Number of presented images has to be between 0 and number of labels loaded ({imageLabels.Count})."
+                );
+            }
+            
+            if (probabilityOfPresentedImageInGallery < 0 || probabilityOfPresentedImageInGallery > 1)
+            {
+                throw new ArgumentException(
+                    "Probability of image being in the presented gallery has to be between 0 and 1."
+                );
+            }
+            
             throw new NotImplementedException();
         }
     }
