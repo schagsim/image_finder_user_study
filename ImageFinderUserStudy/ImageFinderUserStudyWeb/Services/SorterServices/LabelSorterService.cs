@@ -168,11 +168,25 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
                 selectedImageLabels
                     .Select(t => new Tuple<ImageLabels, double>(t, SumOfRelevantLabels(topThreeLabels, t)))
                     .OrderByDescending(t => t.Item2)
-                    .Select(t => t.Item1)
+                    .Select(t => t.Item1.ImageId)
                     .ToList();
             
             // And now we convert to the final array (image gallery).
-            throw new NotImplementedException();
+            var currentIndex = 0;
+            var sortedGallery = new string[numberOfRowsInGallery, numberOfImagesPresentedPerRow];
+            for (var row = 0; row < numberOfRowsInGallery; row++)
+            {
+                for (var column = 0; column < numberOfImagesPresentedPerRow; column++)
+                {
+                    sortedGallery[row, column] = mapImageLabelsToRelevancy[currentIndex];
+                    currentIndex++;
+                }
+            }
+
+            return new SortersDtos.SorterOutput(
+                presentedImage.ImageId,
+                sortedGallery
+            );
         }
     }
 }
