@@ -66,7 +66,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
         /// The "+1" is there in case we want to select a distinct image from the N selected.
         /// </summary>
         /// <returns>New list of ImageLabels selected.</returns>
-        private List<ImageLabels> selectRandomImages(
+        private static List<ImageLabels> SelectRandomImages(
             int numberOfImagesToPresent,
             IReadOnlyList<ImageLabels> imageLabels
         )
@@ -94,15 +94,42 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             return selectedIndexes
                 .Select(t => new ImageLabels(
                     new string(imageLabels[t].ImageId),
-                    new Dictionary<string, double>(imageLabels[t].LabelValues))
-                )
+                    new Dictionary<string, double>(imageLabels[t].LabelValues)))
                 .ToList();
+        }
+
+        private static IEnumerable<string> GetTopNLabels(int numberOfTopLabels, ImageLabels imageLabels)
+        {
+            if (numberOfTopLabels > imageLabels.LabelValues.Count)
+            {
+                throw new ArgumentException("Cannot select more label values than the number of labels loaded");
+            }
+            
+            return imageLabels.LabelValues
+                    .OrderByDescending(x => x.Value)
+                    .Take(numberOfTopLabels)
+                    .Select(t => t.Key)
+                    .ToList();
+        }
+
+        /// <summary>
+        /// Sum all relevant labels in the @imageLabels container.
+        /// </summary>
+        /// <returns></returns>
+        private static double SumOfRelevantLabels(
+            IEnumerable<string> relevantLabels,
+            ImageLabels imageLabels
+        )
+        {
+            return imageLabels.LabelValues
+                .Where(t => relevantLabels.Contains(t.Key))
+                .Sum(t => t.Value);
         }
         
         public SortersDtos.SorterOutput SortLabels(
             int numberOfImagesToPresent,
             double probabilityOfPresentedImageInGallery,
-            List<ImageLabels> imageLabels
+            IReadOnlyList<ImageLabels> imageLabels
         )
         {
             if (numberOfImagesToPresent < 0 || numberOfImagesToPresent > imageLabels.Count)
@@ -119,6 +146,29 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
                 );
             }
             
+            // Now we select random N+1 image labels.
+            var selectedImageLabels = SelectRandomImages(
+                numberOfImagesToPresent,
+                imageLabels
+            );
+            
+            var rnd = new Random(DateTime.Now.Ticks.GetHashCode());
+            var presentedImage =
+                rnd.NextDouble() > probabilityOfPresentedImageInGallery
+                    ? selectedImageLabels[selectedImageLabels.Count - 1]
+                    : selectedImageLabels[rnd.Next(0, selectedImageLabels.Count - 1)];
+            selectedImageLabels.RemoveAt(selectedImageLabels.Count - 1); // Remove the last image label. We no longer need it.
+            
+            // Now we get the top three labels of the presented image and sort the rest of the image labels according to that.
+            var topThreeLabels = GetTopNLabels(3, presentedImage);
+            var mapImageLabelsToRelevancy =
+                selectedImageLabels
+                    .Select(t => new Tuple<ImageLabels, double>(t, SumOfRelevantLabels(topThreeLabels, t)))
+                    .OrderByDescending(t => t.Item2)
+                    .Select(t => t.Item1)
+                    .ToList();
+            
+            // And now we convert to the final array (image gallery).
             throw new NotImplementedException();
         }
     }
