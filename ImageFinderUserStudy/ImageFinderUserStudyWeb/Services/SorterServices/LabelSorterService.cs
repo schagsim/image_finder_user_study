@@ -68,7 +68,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
         /// <returns>New list of ImageLabels selected.</returns>
         private List<ImageLabels> selectRandomImages(
             int numberOfImagesToPresent,
-            List<ImageLabels> imageLabels
+            IReadOnlyList<ImageLabels> imageLabels
         )
         {
             if (numberOfImagesToPresent > imageLabels.Count)
