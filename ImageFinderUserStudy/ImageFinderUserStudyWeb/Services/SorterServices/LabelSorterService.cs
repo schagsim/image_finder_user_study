@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -60,12 +61,42 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             return parsedImageLabels;
         }
 
+        /// <summary>
+        /// Selects N+1 random image labels.
+        /// The "+1" is there in case we want to select a distinct image from the N selected.
+        /// </summary>
+        /// <returns>New list of ImageLabels selected.</returns>
         private List<ImageLabels> selectRandomImages(
             int numberOfImagesToPresent,
             List<ImageLabels> imageLabels
         )
         {
-            throw new NotImplementedException();
+            if (numberOfImagesToPresent > imageLabels.Count)
+            {
+                throw new ArgumentException("Cannot select more image labels than the number of loaded labels");
+            }
+            
+            var randomSelector = new Random(DateTime.Now.Ticks.GetHashCode());
+            var possibleIndexes = new List<int>();
+            for (var i = 0; i < imageLabels.Count; i++)
+            {
+                possibleIndexes.Add(i);
+            }
+            // Now we generate N+1 positions.
+            var selectedIndexes = new List<int>();
+            while (selectedIndexes.Count < numberOfImagesToPresent + 1)
+            {
+                var currentIndex = randomSelector.Next(0, possibleIndexes.Count);
+                possibleIndexes.RemoveAt(currentIndex);
+                selectedIndexes.Add(currentIndex);
+            }
+
+            return selectedIndexes
+                .Select(t => new ImageLabels(
+                    new string(imageLabels[t].ImageId),
+                    new Dictionary<string, double>(imageLabels[t].LabelValues))
+                )
+                .ToList();
         }
         
         public SortersDtos.SorterOutput SortLabels(
