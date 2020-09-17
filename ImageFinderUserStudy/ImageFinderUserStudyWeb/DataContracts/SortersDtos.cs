@@ -7,11 +7,11 @@ namespace ImageFinderUserStudyWeb.DataContracts
         public class SorterOutput
         {
             public string PresentedImageId { get; }
-            public List<string> PresentedImageGallerySorted { get; }
+            public string[,] PresentedImageGallerySorted { get; }
 
             public SorterOutput(
                 string presentedImageId,
-                List<string> presentedImageGallerySorted
+                string[,] presentedImageGallerySorted
             )
             {
                 PresentedImageId = presentedImageId;

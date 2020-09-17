@@ -127,11 +127,14 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
         }
         
         public SortersDtos.SorterOutput SortLabels(
-            int numberOfImagesToPresent,
+            int numberOfImagesPresentedPerRow,
+            int numberOfRowsInGallery,
             double probabilityOfPresentedImageInGallery,
             IReadOnlyList<ImageLabels> imageLabels
         )
         {
+            var numberOfImagesToPresent = numberOfRowsInGallery * numberOfImagesPresentedPerRow;
+            
             if (numberOfImagesToPresent < 0 || numberOfImagesToPresent > imageLabels.Count)
             {
                 throw new ArgumentException(
