@@ -144,11 +144,34 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             // Remove the last color histogram. We no longer need it.
             selectedColorHistograms.RemoveAt(selectedColorHistograms.Count - 1);
 
-            // Now we are holding a map which says how different is a specific image from the presented image.
-            var mapHistogramPresentedImageDifference =
-                selectedColorHistograms
-                    .Select(h => new Tuple<ColorHistogram, double>(h, HistogramDifferenceSum(h, presentedImage)))
-                    .ToList();
+            var comparedHistograms = new Dictionary<HistogramComparisonKeys, double>();
+            for (
+                var colorHistogramIndex = 0;
+                colorHistogramIndex < selectedColorHistograms.Count;
+                colorHistogramIndex++
+                )
+            {
+                for (
+                    var secondColorHistogramIndex = colorHistogramIndex + 1;
+                    secondColorHistogramIndex < selectedColorHistograms.Count;
+                    secondColorHistogramIndex++
+                    )
+                {
+                    var histogramComparison =
+                        HistogramDifferenceSum(
+                            selectedColorHistograms[colorHistogramIndex],
+                            selectedColorHistograms[secondColorHistogramIndex]
+                        );
+                    comparedHistograms[new HistogramComparisonKeys(
+                        selectedColorHistograms[colorHistogramIndex].ImageId,
+                        selectedColorHistograms[secondColorHistogramIndex].ImageId
+                        )] = histogramComparison;
+                    comparedHistograms[new HistogramComparisonKeys(
+                        selectedColorHistograms[secondColorHistogramIndex].ImageId,
+                        selectedColorHistograms[colorHistogramIndex].ImageId
+                    )] = histogramComparison;
+                }
+            }
             
             /*
              We will display the gallery in the following way.
