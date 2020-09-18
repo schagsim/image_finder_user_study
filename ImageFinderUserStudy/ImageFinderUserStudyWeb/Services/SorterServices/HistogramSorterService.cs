@@ -67,7 +67,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
         /// Go through the differences in two color histograms, square them a sum all this.
         /// </summary>
         /// <returns>Sum of the histogram differences squared.</returns>
-        private double HistogramDifferenceSum(
+        private static double HistogramDifferenceSum(
             ColorHistogram histogram1,
             ColorHistogram histogram2
         )
@@ -104,6 +104,56 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             }
 
             return blueDifferenceSum + greenDifferenceSum + redDifferenceSum;
+        }
+
+        private static string[,] SortHistograms(
+            int numberOfRows,
+            int numberOfColumns,
+            Dictionary<HistogramComparisonKeys, double> comparedHistograms,
+            IReadOnlyCollection<ColorHistogram> selectedHistograms
+        )
+        {
+            if (numberOfRows < 1 || numberOfColumns < 1)
+            {
+                throw new ArgumentException("Rows and columns dimensions have to be at least 1x1.");
+            }
+            if (selectedHistograms.Count != numberOfRows * numberOfColumns)
+            {
+                throw new ArgumentException("Number of selected histograms has to be the same as number of cells.");
+            }
+
+            var histograms = selectedHistograms
+                .Select(h => new ColorHistogram(
+                    h.ImageId,
+                    new List<double>(h.BlueHistogram),
+                    new List<double>(h.GreenHistogram),
+                    new List<double>(h.RedHistogram)
+                ))
+                .ToList();
+            
+            // Create a boolean two-dimensional array holding info which cells have already been queued.
+            var queuedCells = new bool[numberOfRows, numberOfColumns];
+            for (var row = 0; row < numberOfRows; row++)
+            {
+                for (var column = 0; column < numberOfColumns; column++)
+                {
+                    queuedCells[row, column] = false;
+                }
+            }
+            
+            // Create a queue.
+            var queuedCellsQueue = new Queue<Tuple<int, int>>();
+            // Queue the first cell ([0, 0]) and watch the magic happen.
+            queuedCellsQueue.Enqueue(new Tuple<int, int>(0, 0));
+            queuedCells[0, 0] = true;
+
+            var filledGallery = new string[numberOfRows, numberOfColumns];
+            while (queuedCellsQueue.Count > 0)
+            {
+                // Dequeue, find the best image in histograms, enqueue all adjacent cells.
+            }
+            
+            throw new NotImplementedException();
         }
 
         public SortersDtos.SorterOutput SortHistograms(
@@ -176,14 +226,21 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             /*
              We will display the gallery in the following way.
              We select a random image and place it to the coordinates [0, 0].
-             After that, we put adjacent unfilled images to a FIFO collection.
-             We will hold an two-dimensional array of booleans to remember which positions are already in the stack.
-             We start popping the unfilled images from the stack.
-             For each such popped image, we find the most similar image and put it there.
-             Push all adjacent unfilled images into the stack.
+             After that, we put adjacent unfilled images to a FIFO queue.
+             We will hold an two-dimensional array of booleans to remember which positions are already in the queue.
+             We start popping the unfilled images from the queue.
+             For each such popped image, we find the most similar image (from comparedHistograms) and put it there.
+             Push all adjacent unfilled images into the queue.
             */ 
-            
-            throw new NotImplementedException();
+            return new SortersDtos.SorterOutput(
+                presentedImage.ImageId,
+                SortHistograms(
+                    numberOfRowsInGallery,
+                    numberOfImagesPresentedPerRow,
+                    comparedHistograms,
+                    selectedColorHistograms
+                    )
+                );
         }
     }
 }
