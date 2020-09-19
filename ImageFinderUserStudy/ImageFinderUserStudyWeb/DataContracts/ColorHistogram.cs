@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -55,4 +56,19 @@ namespace ImageFinderUserStudyWeb.DataContracts
             Key2 = key2;
         }
     }
+    
+    public class QueueData
+    {
+        public Tuple<int, int> CellCoordinates { get; }
+        public string SourceImageId { get; }
+
+        public QueueData(
+            string sourceImageId,
+            Tuple<int, int> cellCoordinates
+        )
+        {
+            SourceImageId = sourceImageId;
+            CellCoordinates = cellCoordinates;
+        }
+    };
 }
