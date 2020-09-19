@@ -106,6 +106,32 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             return blueDifferenceSum + greenDifferenceSum + redDifferenceSum;
         }
 
+        private static int FindTheClosestHistogramIndex(
+            string imageId,
+            IReadOnlyList<ColorHistogram> possibleHistograms,
+            IReadOnlyDictionary<HistogramComparisonKeys, double> comparedHistograms
+        )
+        {
+            if (possibleHistograms.Count == 0)
+            {
+                throw new ArgumentException("Cannot select from empty possible Histograms list.");
+            }
+            var currentIndex = 0;
+            var currentClosestVal =
+                comparedHistograms[new HistogramComparisonKeys(imageId, possibleHistograms[currentIndex].ImageId)];
+
+            for (var i = 1; i < possibleHistograms.Count; i++)
+            {
+                var currentComparison =
+                    comparedHistograms[new HistogramComparisonKeys(imageId, possibleHistograms[i].ImageId)];
+                if (!(currentComparison < currentClosestVal)) continue;
+                currentClosestVal = currentComparison;
+                currentIndex = i;
+            }
+
+            return currentIndex;
+        }
+
         private static string[,] SortHistograms(
             int numberOfRows,
             int numberOfColumns,
@@ -130,6 +156,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
                     new List<double>(h.RedHistogram)
                 ))
                 .ToList();
+            var randomGen = new Random(DateTime.Now.Ticks.GetHashCode());
             
             // Create a boolean two-dimensional array holding info which cells have already been queued.
             var queuedCells = new bool[numberOfRows, numberOfColumns];
@@ -141,19 +168,82 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
                 }
             }
             
-            // Create a queue.
-            var queuedCellsQueue = new Queue<Tuple<int, int>>();
-            // Queue the first cell ([0, 0]) and watch the magic happen.
-            queuedCellsQueue.Enqueue(new Tuple<int, int>(0, 0));
-            queuedCells[0, 0] = true;
-
             var filledGallery = new string[numberOfRows, numberOfColumns];
+            // Create a queue.
+            var queuedCellsQueue = new Queue<QueueData>();
+            var randomIndex = randomGen.Next(0, histograms.Count);
+            var firstHistogramId = histograms[randomIndex].ImageId;
+            histograms.RemoveAt(randomIndex);
+            
+            // Queue the first cell ([0, 0]) with random image ID and watch the magic happen.
+            queuedCellsQueue.Enqueue(
+                new QueueData(
+                    firstHistogramId,
+                    new Tuple<int, int>(0, 0)
+                    )
+                );
+            queuedCells[0, 0] = true;
+            filledGallery[0, 0] = firstHistogramId;
+
             while (queuedCellsQueue.Count > 0)
             {
-                // Dequeue, find the best image in histograms, enqueue all adjacent cells.
+                var currentCell = queuedCellsQueue.Dequeue();
+                
+                var nextHistogramIndex =
+                    FindTheClosestHistogramIndex(
+                        currentCell.SourceImageId,
+                        histograms,
+                        comparedHistograms
+                        );
+                var nextImageId = histograms[nextHistogramIndex].ImageId;
+                filledGallery[currentCell.CellCoordinates.Item1, currentCell.CellCoordinates.Item2] = nextImageId;
+                histograms.RemoveAt(nextHistogramIndex);
+
+                void TryQueueCellsAndMark(
+                    int newRow,
+                    int newColumn,
+                    int maxRows,
+                    int maxColumns,
+                    Queue<QueueData> queue,
+                    bool[,] queuedItems
+                    )
+                {
+                    if (queuedCells[newRow, newColumn] || newRow >= maxRows || newColumn >= maxColumns) return;
+                    queue.Enqueue(
+                        new QueueData(
+                            nextImageId,
+                            new Tuple<int, int>(newRow, newColumn)
+                        ));
+                    queuedItems[newRow, newColumn] = true;
+                }
+                
+                TryQueueCellsAndMark(
+                    currentCell.CellCoordinates.Item1,
+                    currentCell.CellCoordinates.Item2 + 1,
+                    numberOfRows,
+                    numberOfColumns,
+                    queuedCellsQueue,
+                    queuedCells
+                    );
+                TryQueueCellsAndMark(
+                    currentCell.CellCoordinates.Item1 + 1,
+                    currentCell.CellCoordinates.Item2 + 1,
+                    numberOfRows,
+                    numberOfColumns,
+                    queuedCellsQueue,
+                    queuedCells
+                );
+                TryQueueCellsAndMark(
+                    currentCell.CellCoordinates.Item1 + 1,
+                    currentCell.CellCoordinates.Item2,
+                    numberOfRows,
+                    numberOfColumns,
+                    queuedCellsQueue,
+                    queuedCells
+                );
             }
-            
-            throw new NotImplementedException();
+
+            return filledGallery;
         }
 
         public SortersDtos.SorterOutput SortHistograms(
