@@ -154,6 +154,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
                 imageLabels
             );
             
+            // TODO: This part could be done in a more general way so all the sorter services can use this.
             var rnd = new Random(DateTime.Now.Ticks.GetHashCode());
             var presentedImage =
                 rnd.NextDouble() > probabilityOfPresentedImageInGallery
