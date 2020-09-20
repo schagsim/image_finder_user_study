@@ -33,7 +33,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             IReadOnlyList<ColorHistogram> colorHistograms
         )
         {
-            if (numberOfImagesToPresent > colorHistograms.Count)
+            if (numberOfImagesToPresent + 1 > colorHistograms.Count)
             {
                 throw new ArgumentException("Cannot select more image labels than the number of loaded labels");
             }
@@ -135,7 +135,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
         private static string[,] SortHistograms(
             int numberOfRows,
             int numberOfColumns,
-            Dictionary<HistogramComparisonKeys, double> comparedHistograms,
+            IReadOnlyDictionary<HistogramComparisonKeys, double> comparedHistograms,
             IReadOnlyCollection<ColorHistogram> selectedHistograms
         )
         {
