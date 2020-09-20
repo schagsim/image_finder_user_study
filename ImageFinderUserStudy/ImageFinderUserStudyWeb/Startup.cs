@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ImageFinderUserStudyWeb.Services;
+using ImageFinderUserStudyWeb.Services.SorterServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,10 +28,15 @@ namespace ImageFinderUserStudyWeb
             var configService = new GlobalConfigService();
             var globalConfig = configService.LoadConfig(Configuration);
             var userSessionsManager = new UserSessionsManager();
+            
+            var labelsService = new LabelSorterService();
+            var histogramService = new HistogramSorterService();
 
             services.AddSingleton(globalConfig);
             services.AddSingleton(configService);
             services.AddSingleton(userSessionsManager);
+            services.AddSingleton(labelsService);
+            services.AddSingleton(histogramService);
             
             services.AddRazorPages();
         }
