@@ -1,6 +1,19 @@
 # Image Finder User Study
 Simple web application for user study, letting users find a presented image in a gallery
 
+## Running the application
+### Required files
+First, you need to have
+1) Google image labels files
+2) Color histogram files
+3) Semantic vectors files
+
+By default, in appSettings.json, these file paths are set to
+1) "Resources/GoogleLabelsFiles"
+2) "Resources/ColorHistogramFiles"
+3) "Resources/SemanticVectorsFiles"
+respectively. However, you can change these file paths.
+
 ## Running Python scripts
 ### Histogram generation
 Go to folder `./python_scripts`. Create and activate a virtual environment.
