@@ -26,7 +26,10 @@ namespace ImageFinderUserStudyTest.SortersTest.HistogramService
             {
                 for (var j = i - 1; j >= 0; j--)
                 {
-                    Assert.True(presentedImages[i].ImageId != presentedImages[j].ImageId);
+                    Assert.True(
+                        presentedImages[i].ImageId != presentedImages[j].ImageId,
+                        $"{presentedImages[i].ImageId} matches {presentedImages[j].ImageId}"
+                        );
                 }
                 presentedImages.RemoveAt(i);
             }
