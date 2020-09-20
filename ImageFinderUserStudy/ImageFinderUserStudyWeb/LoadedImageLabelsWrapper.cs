@@ -3,9 +3,9 @@ using ImageFinderUserStudyWeb.DataContracts;
 
 namespace ImageFinderUserStudyWeb
 {
-    public class ImageLabelsWrapper
+    public class LoadedImageLabelsWrapper
     {
-        public ImageLabelsWrapper(List<ImageLabels> loadedLabels)
+        public LoadedImageLabelsWrapper(List<ImageLabels> loadedLabels)
         {
             LoadedImageLabels = loadedLabels;
         }

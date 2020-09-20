@@ -32,11 +32,19 @@ namespace ImageFinderUserStudyWeb
             var labelsService = new LabelSorterService();
             var histogramService = new HistogramSorterService();
 
+            var imageLabelsPath = Configuration["FilePaths:ImageLabelsPath"];
+            var colorHistogramsPath = Configuration["FilePaths:ColorHistogramFiles"];
+
+            var imageLabelsWrapper = new LoadedImageLabelsWrapper(labelsService.ParseLabels(imageLabelsPath));
+            var histogramsWrapper = new LoadedHistogramsWrapper(histogramService.ParseHistograms(colorHistogramsPath));
+
             services.AddSingleton(globalConfig);
             services.AddSingleton(configService);
             services.AddSingleton(userSessionsManager);
             services.AddSingleton(labelsService);
             services.AddSingleton(histogramService);
+            services.AddSingleton(imageLabelsWrapper);
+            services.AddSingleton(histogramsWrapper);
             
             services.AddRazorPages();
         }
