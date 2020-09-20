@@ -1,25 +1,27 @@
+using System;
 using System.IO;
 using System.Linq;
 using ImageFinderUserStudyWeb.Services.SorterServices;
 using Xunit;
 
-namespace ImageFinderUserStudyTest.SortersTest.HistogramService
+namespace ImageFinderUserStudyTest.SortersTest.LabelService
 {
-    public class ParseHistograms
+    public class ParseLabelsTest
     {
-        private const string TestFilesFolder = @"TestResources/TestColorHistograms";
+        private const string TestFilesFolder = @"TestResources/TestImageLabels";
         private const int NumberOfHistogramsInTestFolder = 24;
+        private const string TestImageId = "v00006_s00033(f004957-f005173)_g00078_f005125";
+        private const int NumberOfTestLabels = 15;
         
         [Fact]
-        public void CorrectParse()
+        public void CorrectParseLabelsTest()
         {
-            var histogramService = new HistogramSorterService();
+            var labelService = new LabelSorterService();
             
             // Get the directory in which the test files are contained.
             var pathToHistogramFiles = $"{Directory.GetCurrentDirectory()}/../../../{TestFilesFolder}";
-            
-            // Parse the files in the test directory.
-            var parseOutput = histogramService.ParseHistograms(pathToHistogramFiles);
+
+            var parseOutput = labelService.ParseLabels(pathToHistogramFiles);
             
             var testFileNames =
                 Directory
@@ -29,9 +31,9 @@ namespace ImageFinderUserStudyTest.SortersTest.HistogramService
             
             var imageIds =
                 parseOutput
-                    .Select(histogram => histogram.ImageId)
+                    .Select(imageLabels => imageLabels.ImageId)
                     .ToList();
-
+            
             Assert.True(testFileNames.Count == NumberOfHistogramsInTestFolder);
             Assert.True(testFileNames.Count == parseOutput.Count);
             foreach (var testFileName in testFileNames)
@@ -39,11 +41,18 @@ namespace ImageFinderUserStudyTest.SortersTest.HistogramService
                 Assert.Contains(testFileName, imageIds);
             }
 
-            foreach (var colorHistogram in parseOutput)
+            try
             {
-                Assert.True(colorHistogram.RedHistogram.Count == 16);
-                Assert.True(colorHistogram.GreenHistogram.Count == 16);
-                Assert.True(colorHistogram.BlueHistogram.Count == 16);
+                var testImageLabels = parseOutput.Find(imageLabels => imageLabels.ImageId == TestImageId);
+                Assert.True(testImageLabels?.LabelValues.Count == NumberOfTestLabels);
+            }
+            catch (NullReferenceException)
+            {
+                Assert.True(false);
+            }
+            catch (Exception)
+            {
+                Assert.True(false);
             }
         }
     }
