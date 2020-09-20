@@ -8,6 +8,7 @@ namespace ImageFinderUserStudyTest.SortersTest.HistogramService
     public class ParseHistograms
     {
         private const string TestFilesFolder = @"TestResources/TestColorHistograms";
+        private const int NumberOfHistogramsInTestFolder = 24;
         
         [Fact]
         public void CorrectParse()
@@ -31,6 +32,7 @@ namespace ImageFinderUserStudyTest.SortersTest.HistogramService
                     .Select(histogram => histogram.ImageId)
                     .ToList();
 
+            Assert.True(testFileNames.Count == NumberOfHistogramsInTestFolder);
             Assert.True(testFileNames.Count == parseOutput.Count);
             foreach (var testFileName in testFileNames)
             {
@@ -43,8 +45,6 @@ namespace ImageFinderUserStudyTest.SortersTest.HistogramService
                 Assert.True(colorHistogram.GreenHistogram.Count == 16);
                 Assert.True(colorHistogram.BlueHistogram.Count == 16);
             }
-            
-            
         }
     }
 }
