@@ -65,7 +65,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
         /// The "+1" is there in case we want to select a distinct image from the N selected.
         /// </summary>
         /// <returns>New list of ImageLabels selected.</returns>
-        private static List<ImageLabels> SelectRandomImages(
+        public List<ImageLabels> SelectRandomImages(
             int numberOfImagesToPresent,
             IReadOnlyList<ImageLabels> imageLabels
         )
@@ -83,7 +83,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             }
             // Now we generate N+1 positions.
             var selectedIndexes = new List<int>();
-            while (selectedIndexes.Count < numberOfImagesToPresent + 1)
+            while (selectedIndexes.Count < numberOfImagesToPresent)
             {
                 var currentIndex = randomSelector.Next(0, possibleIndexes.Count);
                 possibleIndexes.RemoveAt(currentIndex);
@@ -97,7 +97,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
                 .ToList();
         }
 
-        private static IEnumerable<string> GetTopNLabels(int numberOfTopLabels, ImageLabels imageLabels)
+        public List<string> GetTopNLabels(int numberOfTopLabels, ImageLabels imageLabels)
         {
             if (numberOfTopLabels > imageLabels.LabelValues.Count)
             {
@@ -115,7 +115,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
         /// Sum all relevant labels in the @imageLabels container.
         /// </summary>
         /// <returns></returns>
-        private static double SumOfRelevantLabels(
+        public double SumOfRelevantLabels(
             IEnumerable<string> relevantLabels,
             ImageLabels imageLabels
         )
@@ -150,7 +150,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             
             // Now we select random N+1 image labels.
             var selectedImageLabels = SelectRandomImages(
-                numberOfImagesToPresent,
+                numberOfImagesToPresent + 1,
                 imageLabels
             );
             
