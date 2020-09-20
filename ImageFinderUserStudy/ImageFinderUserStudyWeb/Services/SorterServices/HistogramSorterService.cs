@@ -18,16 +18,15 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
         }
         
         /// <summary>
-        /// Selects N+1 random image color histograms.
-        /// The "+1" is there in case we want to select a distinct image from the N selected.
+        /// Selects N random image color histograms.
         /// </summary>
         /// <returns>New list of ColorHistograms selected.</returns>
-        private static List<ColorHistogram> SelectRandomImages(
+        public List<ColorHistogram> SelectRandomImages(
             int numberOfImagesToPresent,
             IReadOnlyList<ColorHistogram> colorHistograms
         )
         {
-            if (numberOfImagesToPresent + 1 > colorHistograms.Count)
+            if (numberOfImagesToPresent > colorHistograms.Count)
             {
                 throw new ArgumentException("Cannot select more image labels than the number of loaded labels");
             }
@@ -38,9 +37,9 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             {
                 possibleIndexes.Add(i);
             }
-            // Now we generate N+1 positions.
+            // Now we generate N positions.
             var selectedIndexes = new List<int>();
-            while (selectedIndexes.Count < numberOfImagesToPresent + 1)
+            while (selectedIndexes.Count < numberOfImagesToPresent)
             {
                 var currentIndex = randomSelector.Next(0, possibleIndexes.Count);
                 possibleIndexes.RemoveAt(currentIndex);
@@ -265,7 +264,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
 
             var selectedColorHistograms =
                 SelectRandomImages(
-                    numberOfImagesToPresent,
+                    numberOfImagesToPresent + 1,
                     colorHistograms
                 );
             
