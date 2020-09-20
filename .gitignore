@@ -353,6 +353,10 @@ ImageFinderUserStudy/.idea/
 
 ImageFinderUserStudy/ImageFinderUserStudyWeb/wwwroot/Resources/
 
+ImageFinderUserStudy/ImageFinderUserStudyWeb/Resources/
+
 python_scripts/*.txt
 
 python_scripts/test_files/
+
+/python_scripts/venv

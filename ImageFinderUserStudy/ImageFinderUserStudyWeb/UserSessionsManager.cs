@@ -5,7 +5,7 @@ namespace ImageFinderUserStudyWeb
 {
     public class UserSessionsManager
     {
-        public Dictionary<Guid, UserSessionInfo> UserSessions { get; private set; }
+        public Dictionary<Guid, UserSessionInfo> UserSessions { get; }
 
         public UserSessionsManager()
         {
