@@ -11,14 +11,8 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
     {
         public List<ColorHistogram> ParseHistograms(string pathToHistogramsFolder)
         {
-            if (pathToHistogramsFolder == null)
-            {
-                throw new ArgumentNullException(nameof(pathToHistogramsFolder));
-            }
-
-            var colorHistogramFiles = Directory.GetFiles(pathToHistogramsFolder);
-
-            return colorHistogramFiles
+            return Directory
+                .GetFiles(pathToHistogramsFolder)
                 .Select(colorHistogramFile => JsonConvert.DeserializeObject<ColorHistogram>(File.ReadAllText(colorHistogramFile)))
                 .ToList();
         }
