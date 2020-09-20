@@ -62,7 +62,12 @@ namespace ImageFinderUserStudyWeb.Pages
             var newUserSession = new UserSessionInfo(
                 UserSessionId,
                 sortedGallery.PresentedImageId,
-                sortedGallery.PresentedImageGallerySorted
+                sortedGallery.PresentedImageGallerySorted,
+                _globalConfig.GalleryType,
+                _globalConfig.GalleryWidthPixels,
+                _globalConfig.GalleryHeightPixels,
+                _globalConfig.NumberOfColumns,
+                _globalConfig.NumberOfRows
                 );
             
             _userSessionsManager.UserSessions.Add(
