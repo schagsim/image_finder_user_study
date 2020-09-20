@@ -10,12 +10,12 @@
         Remember this image!
     </h2>
     <img 
-        src="~/Resources/GoogleImages/v00002_s00062(f004514-f004638)_g00096_f004585.jpg"
+        src="@Model.ImagePath(Model.PresentedImageId)"
         style="height:500px;width:700px;"
         alt="Image not found."
     />
     <form method="get">
-        <button type="submit" asp-page="ImageGallery">
+        <button type="submit" asp-page="ImageGallery" id="IndexPageContinueButton">
             I want to try finding this image in a gallery!
         </button>
     </form>
