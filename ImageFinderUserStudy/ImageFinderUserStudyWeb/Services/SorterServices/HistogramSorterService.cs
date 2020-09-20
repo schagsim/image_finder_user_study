@@ -60,7 +60,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
         /// Go through the differences in two color histograms, square them a sum all this.
         /// </summary>
         /// <returns>Sum of the histogram differences squared.</returns>
-        private static double HistogramDifferenceSum(
+        public double HistogramDifferenceSum(
             ColorHistogram histogram1,
             ColorHistogram histogram2
         )
