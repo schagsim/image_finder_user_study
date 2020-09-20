@@ -138,7 +138,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             return comparedHistograms;
         }
         
-        private static int FindTheClosestHistogramIndex(
+        public int FindTheClosestHistogramIndex(
             string imageId,
             IReadOnlyList<ColorHistogram> possibleHistograms,
             IReadOnlyDictionary<HistogramComparisonKeys, double> comparedHistograms
@@ -164,7 +164,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             return currentIndex;
         }
 
-        private static string[,] SortHistograms(
+        public string[,] SortHistograms(
             int numberOfRows,
             int numberOfColumns,
             IReadOnlyDictionary<HistogramComparisonKeys, double> comparedHistograms,
