@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ImageFinderUserStudyWeb.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,20 +24,12 @@ namespace ImageFinderUserStudyWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            int.TryParse(Configuration["GallerySettings:GalleryWidthPixels"], out var galleryWidth);
-            int.TryParse(Configuration["GallerySettings:GalleryHeightPixels"], out var galleryHeight);
-            // TODO: The scroll bars in the gallery can be different. Is there a good way how to solve it?
-            //    The problem with the added pixel width is that if we don't add the additional pixels, the table
-            //    is not going to fit the table wrapper and a side scrollbar in the bottom appears.
-            int.TryParse(Configuration["GallerySettings:GalleryScrollBarPixels"], out var scrollBarPixels);
-            var globalConfig = new GlobalConfig(
-                galleryWidth,
-                galleryHeight,
-                scrollBarPixels
-            );
+            var configService = new GlobalConfigService();
+            var globalConfig = configService.LoadConfig(Configuration);
             var userSessionsManager = new UserSessionsManager();
 
             services.AddSingleton(globalConfig);
+            services.AddSingleton(configService);
             services.AddSingleton(userSessionsManager);
             
             services.AddRazorPages();

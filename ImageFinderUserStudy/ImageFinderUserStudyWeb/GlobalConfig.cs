@@ -2,6 +2,7 @@ namespace ImageFinderUserStudyWeb
 {
     public enum GalleryType
     {
+        Unknown,
         ImageLabels,
         ColorHistograms,
         SemanticVectors
