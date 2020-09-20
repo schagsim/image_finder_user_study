@@ -16,6 +16,8 @@ namespace ImageFinderUserStudyWeb.Pages
         
         public string PresentedImageId { get; private set; }
         
+        public Guid UserSessionId { get; private set; }
+        
         public ImagePresentation(
             GlobalConfig globalConfig,
             UserSessionsManager userSessionsManager,
@@ -40,7 +42,7 @@ namespace ImageFinderUserStudyWeb.Pages
         
         public void OnGet()
         {
-            var newSessionId = Guid.NewGuid();
+            UserSessionId = Guid.NewGuid();
             var sortedGallery = _globalConfig.GalleryType switch
             {
                 GalleryType.Unknown => throw new ApplicationException("Type of gallery is not specified!"),
@@ -58,13 +60,13 @@ namespace ImageFinderUserStudyWeb.Pages
             PresentedImageId = sortedGallery.PresentedImageId;
             
             var newUserSession = new UserSessionInfo(
-                newSessionId,
+                UserSessionId,
                 sortedGallery.PresentedImageId,
                 sortedGallery.PresentedImageGallerySorted
                 );
             
             _userSessionsManager.UserSessions.Add(
-                newSessionId,
+                UserSessionId,
                 newUserSession
             );
         }

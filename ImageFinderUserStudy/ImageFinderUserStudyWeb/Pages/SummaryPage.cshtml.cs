@@ -18,7 +18,7 @@ namespace ImageFinderUserStudyWeb.Pages
             _userSessionsManager = userSessionsManager;
         }
         
-        public void OnGetSummaryPageAsync(
+        public void OnGetSummary(
             Guid userSessionId
         )
         {

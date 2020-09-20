@@ -14,9 +14,10 @@
         style="height:500px;width:700px;"
         alt="Image not found."
     />
-    <form method="get">
-        <button type="submit" asp-page="ImageGallery" id="IndexPageContinueButton">
+    <form method="post" asp-page-handler="Gallery">
+        <button class="btn btn-default">
             I want to try finding this image in a gallery!
         </button>
+        <input type="hidden" name="userSessionId" value="@Model.UserSessionId"/>
     </form>
 </div>
