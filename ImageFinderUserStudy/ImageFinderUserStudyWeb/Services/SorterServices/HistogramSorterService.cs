@@ -75,30 +75,69 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             for (var colorRangeIndex = 0; colorRangeIndex < histogram1.BlueHistogram.Count; colorRangeIndex++)
             {
                 blueDifferenceSum += 
-                    Math.Sqrt(
-                        histogram1.BlueHistogram[colorRangeIndex] - histogram2.BlueHistogram[colorRangeIndex]
+                    Math.Pow(
+                        histogram1.BlueHistogram[colorRangeIndex] - histogram2.BlueHistogram[colorRangeIndex],
+                        2
                         );
             }
             double greenDifferenceSum = 0;
             for (var colorRangeIndex = 0; colorRangeIndex < histogram1.GreenHistogram.Count; colorRangeIndex++)
             {
                 greenDifferenceSum += 
-                    Math.Sqrt(
-                        histogram1.GreenHistogram[colorRangeIndex] - histogram2.GreenHistogram[colorRangeIndex]
+                    Math.Pow(
+                        histogram1.GreenHistogram[colorRangeIndex] - histogram2.GreenHistogram[colorRangeIndex],
+                        2
                     );
             }
             double redDifferenceSum = 0;
             for (var colorRangeIndex = 0; colorRangeIndex < histogram1.RedHistogram.Count; colorRangeIndex++)
             {
                 redDifferenceSum += 
-                    Math.Sqrt(
-                        histogram1.RedHistogram[colorRangeIndex] - histogram2.RedHistogram[colorRangeIndex]
+                    Math.Pow(
+                        histogram1.RedHistogram[colorRangeIndex] - histogram2.RedHistogram[colorRangeIndex],
+                        2
                     );
             }
 
             return blueDifferenceSum + greenDifferenceSum + redDifferenceSum;
         }
 
+        public Dictionary<HistogramComparisonKeys, double> CreateHistogramComparisonMap(
+            IReadOnlyList<ColorHistogram> selectedColorHistograms
+        )
+        {
+            var comparedHistograms = new Dictionary<HistogramComparisonKeys, double>();
+            for (
+                var colorHistogramIndex = 0;
+                colorHistogramIndex < selectedColorHistograms.Count;
+                colorHistogramIndex++
+            )
+            {
+                for (
+                    var secondColorHistogramIndex = colorHistogramIndex + 1;
+                    secondColorHistogramIndex < selectedColorHistograms.Count;
+                    secondColorHistogramIndex++
+                )
+                {
+                    var histogramComparison =
+                        HistogramDifferenceSum(
+                            selectedColorHistograms[colorHistogramIndex],
+                            selectedColorHistograms[secondColorHistogramIndex]
+                        );
+                    comparedHistograms[new HistogramComparisonKeys(
+                        selectedColorHistograms[colorHistogramIndex].ImageId,
+                        selectedColorHistograms[secondColorHistogramIndex].ImageId
+                    )] = histogramComparison;
+                    comparedHistograms[new HistogramComparisonKeys(
+                        selectedColorHistograms[secondColorHistogramIndex].ImageId,
+                        selectedColorHistograms[colorHistogramIndex].ImageId
+                    )] = histogramComparison;
+                }
+            }
+
+            return comparedHistograms;
+        }
+        
         private static int FindTheClosestHistogramIndex(
             string imageId,
             IReadOnlyList<ColorHistogram> possibleHistograms,
@@ -132,6 +171,16 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             IReadOnlyCollection<ColorHistogram> selectedHistograms
         )
         {
+            /*
+             We will display the gallery in the following way.
+             We select a random image and place it to the coordinates [0, 0].
+             After that, we put adjacent unfilled images to a FIFO queue.
+             We will hold an two-dimensional array of booleans to remember which positions are already in the queue.
+             We start popping the unfilled images from the queue.
+             For each such popped image, we find the most similar image (from comparedHistograms) and put it there.
+             Push all adjacent unfilled images into the queue.
+            */
+            
             if (numberOfRows < 1 || numberOfColumns < 1)
             {
                 throw new ArgumentException("Rows and columns dimensions have to be at least 1x1.");
@@ -277,44 +326,9 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             // Remove the last color histogram. We no longer need it.
             selectedColorHistograms.RemoveAt(selectedColorHistograms.Count - 1);
 
-            var comparedHistograms = new Dictionary<HistogramComparisonKeys, double>();
-            for (
-                var colorHistogramIndex = 0;
-                colorHistogramIndex < selectedColorHistograms.Count;
-                colorHistogramIndex++
-                )
-            {
-                for (
-                    var secondColorHistogramIndex = colorHistogramIndex + 1;
-                    secondColorHistogramIndex < selectedColorHistograms.Count;
-                    secondColorHistogramIndex++
-                    )
-                {
-                    var histogramComparison =
-                        HistogramDifferenceSum(
-                            selectedColorHistograms[colorHistogramIndex],
-                            selectedColorHistograms[secondColorHistogramIndex]
-                        );
-                    comparedHistograms[new HistogramComparisonKeys(
-                        selectedColorHistograms[colorHistogramIndex].ImageId,
-                        selectedColorHistograms[secondColorHistogramIndex].ImageId
-                        )] = histogramComparison;
-                    comparedHistograms[new HistogramComparisonKeys(
-                        selectedColorHistograms[secondColorHistogramIndex].ImageId,
-                        selectedColorHistograms[colorHistogramIndex].ImageId
-                    )] = histogramComparison;
-                }
-            }
+            var comparedHistograms =
+                CreateHistogramComparisonMap(selectedColorHistograms);
             
-            /*
-             We will display the gallery in the following way.
-             We select a random image and place it to the coordinates [0, 0].
-             After that, we put adjacent unfilled images to a FIFO queue.
-             We will hold an two-dimensional array of booleans to remember which positions are already in the queue.
-             We start popping the unfilled images from the queue.
-             For each such popped image, we find the most similar image (from comparedHistograms) and put it there.
-             Push all adjacent unfilled images into the queue.
-            */ 
             return new SortersDtos.SorterOutput(
                 presentedImage.ImageId,
                 SortHistograms(
