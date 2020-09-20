@@ -35,7 +35,7 @@ namespace ImageFinderUserStudyTest.SortersTest.HistogramService
                 new List<double> { 0.1, 0.2, 0.2 }
             );
             difference = histogramService.HistogramDifferenceSum(histogram1, histogram3);
-            Assert.True(difference - 2 * Math.Sqrt(0.1) < 0.021);
+            Assert.True(difference - 2 * Math.Pow(0.1, 2) < 0.001);
         }
 
         [Fact]
