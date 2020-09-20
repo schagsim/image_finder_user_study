@@ -163,8 +163,27 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
 
             return currentIndex;
         }
+        
+        private void TryQueueCellsAndMark(
+            int newRow,
+            int newColumn,
+            int maxRows,
+            int maxColumns,
+            string sourceImageId,
+            Queue<QueueData> queue,
+            bool[,] queuedItems
+        )
+        {
+            if (newRow >= maxRows || newColumn >= maxColumns || queuedItems[newRow, newColumn]) return;
+            queue.Enqueue(
+                new QueueData(
+                    sourceImageId,
+                    new Tuple<int, int>(newRow, newColumn)
+                ));
+            queuedItems[newRow, newColumn] = true;
+        }
 
-        public string[,] SortHistograms(
+        public string[,] SortSelectedHistograms(
             int numberOfRows,
             int numberOfColumns,
             IReadOnlyDictionary<HistogramComparisonKeys, double> comparedHistograms,
@@ -217,15 +236,35 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             var firstHistogramId = histograms[randomIndex].ImageId;
             histograms.RemoveAt(randomIndex);
             
-            // Queue the first cell ([0, 0]) with random image ID and watch the magic happen.
-            queuedCellsQueue.Enqueue(
-                new QueueData(
-                    firstHistogramId,
-                    new Tuple<int, int>(0, 0)
-                    )
-                );
             queuedCells[0, 0] = true;
             filledGallery[0, 0] = firstHistogramId;
+            TryQueueCellsAndMark(
+                0,
+                1,
+                numberOfRows,
+                numberOfColumns,
+                firstHistogramId,
+                queuedCellsQueue,
+                queuedCells
+            );
+            TryQueueCellsAndMark(
+                1,
+                1,
+                numberOfRows,
+                numberOfColumns,
+                firstHistogramId,
+                queuedCellsQueue,
+                queuedCells
+            );
+            TryQueueCellsAndMark(
+                1,
+                0,
+                numberOfRows,
+                numberOfColumns,
+                firstHistogramId,
+                queuedCellsQueue,
+                queuedCells
+            );
 
             while (queuedCellsQueue.Count > 0)
             {
@@ -240,30 +279,13 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
                 var nextImageId = histograms[nextHistogramIndex].ImageId;
                 filledGallery[currentCell.CellCoordinates.Item1, currentCell.CellCoordinates.Item2] = nextImageId;
                 histograms.RemoveAt(nextHistogramIndex);
-
-                void TryQueueCellsAndMark(
-                    int newRow,
-                    int newColumn,
-                    int maxRows,
-                    int maxColumns,
-                    Queue<QueueData> queue,
-                    bool[,] queuedItems
-                    )
-                {
-                    if (queuedCells[newRow, newColumn] || newRow >= maxRows || newColumn >= maxColumns) return;
-                    queue.Enqueue(
-                        new QueueData(
-                            nextImageId,
-                            new Tuple<int, int>(newRow, newColumn)
-                        ));
-                    queuedItems[newRow, newColumn] = true;
-                }
                 
                 TryQueueCellsAndMark(
                     currentCell.CellCoordinates.Item1,
                     currentCell.CellCoordinates.Item2 + 1,
                     numberOfRows,
                     numberOfColumns,
+                    nextImageId,
                     queuedCellsQueue,
                     queuedCells
                     );
@@ -272,6 +294,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
                     currentCell.CellCoordinates.Item2 + 1,
                     numberOfRows,
                     numberOfColumns,
+                    nextImageId,
                     queuedCellsQueue,
                     queuedCells
                 );
@@ -280,6 +303,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
                     currentCell.CellCoordinates.Item2,
                     numberOfRows,
                     numberOfColumns,
+                    nextImageId,
                     queuedCellsQueue,
                     queuedCells
                 );
@@ -331,7 +355,7 @@ namespace ImageFinderUserStudyWeb.Services.SorterServices
             
             return new SortersDtos.SorterOutput(
                 presentedImage.ImageId,
-                SortHistograms(
+                SortSelectedHistograms(
                     numberOfRowsInGallery,
                     numberOfImagesPresentedPerRow,
                     comparedHistograms,
