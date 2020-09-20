@@ -11,15 +11,5 @@ namespace ImageFinderUserStudyWeb
         {
             UserSessions = new Dictionary<Guid, UserSessionInfo>();
         }
-
-        public void AddNewSessionInfo(
-            Guid userSessionId
-        )
-        {
-            var newUserSession =
-                new UserSessionInfo(
-                    userSessionId
-                );
-        }
     }
 }
