@@ -24,6 +24,7 @@ namespace ImageFinderUserStudyWeb.Pages
         {
             try
             {
+                System.IO.Directory.CreateDirectory("userSessions");
                 UserSession = _userSessionsManager.UserSessions[userSessionId];
                 var filePath = "userSessions/" + UserSession.UserSessionId + ".json";
                 // TODO: We will later move this to DB instead of file output so it can be queried.
