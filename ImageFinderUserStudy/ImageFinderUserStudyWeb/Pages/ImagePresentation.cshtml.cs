@@ -52,6 +52,17 @@ namespace ImageFinderUserStudyWeb.Pages
                     "Semantic vectors are not yet implemented!"),
                 _ => throw new ApplicationException("Type of gallery is not specified!")
             };
+            
+            var newUserSession = new UserSessionInfo(
+                newSessionId,
+                sortedGallery.PresentedImageId,
+                sortedGallery.PresentedImageGallerySorted
+                );
+            
+            _userSessionsManager.UserSessions.Add(
+                newSessionId,
+                newUserSession
+            );
         }
     }
 }
