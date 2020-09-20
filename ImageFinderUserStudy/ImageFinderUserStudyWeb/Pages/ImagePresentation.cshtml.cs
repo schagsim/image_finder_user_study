@@ -1,6 +1,6 @@
 using System;
-using ImageFinderUserStudyWeb.DataContracts;
 using ImageFinderUserStudyWeb.Services.SorterServices;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ImageFinderUserStudyWeb.Pages
@@ -13,6 +13,8 @@ namespace ImageFinderUserStudyWeb.Pages
         private readonly LoadedHistogramsWrapper _histogramsWrapper;
         private readonly LabelSorterService _labelSorterService;
         private readonly HistogramSorterService _histogramSorterService;
+        
+        public string PresentedImageId { get; private set; }
         
         public ImagePresentation(
             GlobalConfig globalConfig,
@@ -33,7 +35,7 @@ namespace ImageFinderUserStudyWeb.Pages
         
         public string ImagePath(string imageId)
         {
-            return "http://herkules.ms.mff.cuni.cz/lineit/20k_images/images/" + $"{imageId}.jpg";
+            return @"Resources/ImageFiles/" + $"{imageId}.jpg";
         }
         
         public void OnGet()
@@ -52,6 +54,8 @@ namespace ImageFinderUserStudyWeb.Pages
                     "Semantic vectors are not yet implemented!"),
                 _ => throw new ApplicationException("Type of gallery is not specified!")
             };
+
+            PresentedImageId = sortedGallery.PresentedImageId;
             
             var newUserSession = new UserSessionInfo(
                 newSessionId,
@@ -63,6 +67,11 @@ namespace ImageFinderUserStudyWeb.Pages
                 newSessionId,
                 newUserSession
             );
+        }
+        
+        public IActionResult OnPostGallery(Guid userSessionId)
+        {
+            return RedirectToPage("ImageGallery", "Gallery", new { userSessionGuid = userSessionId });
         }
     }
 }
