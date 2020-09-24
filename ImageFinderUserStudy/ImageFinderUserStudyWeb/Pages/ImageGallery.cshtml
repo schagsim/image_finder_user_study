@@ -15,7 +15,7 @@
         <input type="hidden" name="imageId" value="NotPresent" />
     </form>
     
-    <div class="table-wrapper" id="imageGallery" style="overflow:auto;height:@Model.SizeInPixels(Model.GalleryHeightPixels);width:@Model.SizeInPixels(Model.GalleryWidthPixels);margin:auto;">
+    <div class="table-wrapper" id="imageGallery" style="overflow:auto;height:@Model.SizeInPixels(Model.GalleryHeightPixels);width:@Model.SizeInPixels(Model.GalleryWidthPixels+Model.GalleryScrollBarPixels);margin:auto;">
             <table>
                 @for (var row = 0; row < Model.NumberOfRows; row++)
                 {
