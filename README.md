@@ -1,6 +1,23 @@
 # Image Finder User Study
 Simple web application for user study, letting users find a presented image in a gallery
 
+## Technical details
+### Technology
+Image Finder is written in C# in .NET CORE 3.1.
+This allows us to use RazorPages where we can directly call C# code from the .cshtml files.
+Advantage of this technology is the simplicity of creating html pages.
+The disadvantage is that it also bounds you to only use the .NET CORE tools in these html pages.
+This can sometimes make your life harder compared to React/Typescript and Node.js implementation.
+
+.NET CORE is built to be a framework independent package which can run anywhere where there's a .NET CORE runtime.
+
+### Server details
+Image Finder runs with Kestrel proxy in front of the web.
+This doesn't mean it can't run at IIS. If we deploy it to IIS, IIS is going to act as a forwarder.
+
+### Implementation
+TODO
+
 ## Running the application
 ### Required files
 First, you need to have
@@ -42,7 +59,7 @@ dotnet publish -c Release -r win-x64 --self-contained true --output [OutputPath]
 ```
 This command is going to work both on Linux and Windows.
 
-### Running the application
+### Running the application at server
 This previous command sets the application to run at IIS. The application is already configured that way.
 Copy the output from the publish and paste it into the desired location at the server.
 Configure the IIS and add a new Site in IIS according to this guide: https://weblog.west-wind.com/posts/2016/jun/06/publishing-and-running-aspnet-core-applications-with-iis
@@ -53,6 +70,8 @@ After that, go to wwwroot folder and paste the image files under `/./wwwroot/Res
 Note two things
 1) The path to the images, label files and color histograms can be set-up in appsettings.json. This description is for the default behavior.
 2) The Resources folder in the wwwroot is not the same as the Resources folder in the root folder.
+
+Enable directory browsing so Image Finder can load images from the disk https://docs.microsoft.com/en-us/iis/configuration/system.webserver/directorybrowse.
 
 ## Changing the application parameters
 ### appsettings.json
@@ -84,7 +103,7 @@ This enum, I can add to appsettings.json as
 ```
 Which can be translated to `GlobalConfig` in `StartUp` as
 ```
-var labelSorterType = int.TryParse(configuration["GallerySettings:LabelSorterType"], out var galleryTypeValue);
+int.TryParse(configuration["GallerySettings:LabelSorterType"], out var labelSorterType);
 ```
 Then, when function
 ```
