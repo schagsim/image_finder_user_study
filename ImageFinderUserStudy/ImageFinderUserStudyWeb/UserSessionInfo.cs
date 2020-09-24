@@ -20,6 +20,8 @@ namespace ImageFinderUserStudyWeb
         public long? GalleryPresentationTimeTicks { get; set; } = null;
         public long? GalleryAnswerTimeTicks { get; set; } = null;
 
+        public string ImageIdFound { get; set; } = null;
+
         public UserSessionInfo(
             Guid sessionGuid,
             string presentedImageId,
