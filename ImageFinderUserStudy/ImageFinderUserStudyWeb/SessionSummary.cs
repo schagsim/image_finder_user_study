@@ -19,10 +19,17 @@ namespace ImageFinderUserStudyWeb
         public string[,] GalleryPresented { get; }
         public string GalleryType { get; }
         
+        public double SecondsToRespond { get; }
+        
         public SessionSummary(
             UserSessionInfo userSession
         )
         {
+            if (userSession.GalleryPresentationTimeTicks == null || userSession.GalleryAnswerTimeTicks == null)
+            {
+                throw new ArgumentException("Answer times have to be filled.");
+            }
+            
             UserSessionId = userSession.UserSessionId;
             
             GalleryWidthPixels = userSession.GalleryWidth;
@@ -44,6 +51,8 @@ namespace ImageFinderUserStudyWeb
                 ImageFinderUserStudyWeb.GalleryType.SemanticVectors => "Semantic Vectors",
                 _ => "Unknown"
             };
+
+            SecondsToRespond = (new DateTime((long)userSession.GalleryAnswerTimeTicks) - new DateTime((long)userSession.GalleryPresentationTimeTicks)).TotalSeconds;
         }
     }
 }
