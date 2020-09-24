@@ -68,6 +68,7 @@ namespace ImageFinderUserStudyWeb.Pages
         )
         {
             _userSessionsManager.UserSessions[userSessionGuid].GalleryAnswerTimeTicks = DateTime.Now.Ticks;
+            _userSessionsManager.UserSessions[userSessionGuid].ImageIdFound = imageId;
             // TODO: Here, set the time, set the found image to session, etc.
             return RedirectToPage("SummaryPage", "Summary", new { userSessionGuid = userSessionGuid, imageId = imageId });
         }
