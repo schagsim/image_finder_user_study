@@ -53,3 +53,18 @@ After that, go to wwwroot folder and paste the image files under `/./wwwroot/Res
 Note two things
 1) The path to the images, label files and color histograms can be set-up in appsettings.json. This description is for the default behavior.
 2) The Resources folder in the wwwroot is not the same as the Resources folder in the root folder.
+
+## Changing the application parameters
+### appsettings.json
+In the root directory of the application, in appsettings.json, there are parameters for the application. E.g. gallery width, probabilities, etc.
+To change a parametes, change it in the appsettings.json and restart the application.
+
+## Changing application behavior
+### Image sorting
+Every possible sorter has its own service.
+In this service, there can be multiple functions
+```
+private string[,] SortBySomething(var args) { ... }
+```
+To add another sorter, it is suggested to add an enum to the respective service for the sorting type, declare this type in appsettings.json and use switch case to decide which sorter to use according to the settings. This patter can be found with "GalleryType" setting in appsettings.json. Follow this pattern to implement a different sorter.
+To be more object oriented, a sorter class could be added for a given service responsible for different types of sorting.
