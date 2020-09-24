@@ -20,6 +20,8 @@ namespace ImageFinderUserStudyWeb
         public string GalleryType { get; }
         
         public double SecondsToRespond { get; }
+        public string ImageIdFound { get; }
+        public bool CorrectAnswer { get; } = false;
         
         public SessionSummary(
             UserSessionInfo userSession
@@ -28,6 +30,11 @@ namespace ImageFinderUserStudyWeb
             if (userSession.GalleryPresentationTimeTicks == null || userSession.GalleryAnswerTimeTicks == null)
             {
                 throw new ArgumentException("Answer times have to be filled.");
+            }
+
+            if (userSession.ImageIdFound == null)
+            {
+                throw new ArgumentException("Answered image cannot be null.");
             }
             
             UserSessionId = userSession.UserSessionId;
@@ -53,6 +60,24 @@ namespace ImageFinderUserStudyWeb
             };
 
             SecondsToRespond = (new DateTime((long)userSession.GalleryAnswerTimeTicks) - new DateTime((long)userSession.GalleryPresentationTimeTicks)).TotalSeconds;
+            ImageIdFound = userSession.ImageIdFound;
+            var imageIsPresent = false;
+            for (var row = 0; row < NumberOfRows; row++)
+            {
+                for (var column = 0; column < NumberOfImagesPerRow; column++)
+                {
+                    if (GalleryPresented[row, column] != ImageIdFound) continue;
+                    imageIsPresent = true;
+                    break;
+                }
+                if (imageIsPresent == true) break;
+            }
+
+            if (!imageIsPresent && ImageIdFound == "NotPresent" ||
+                imageIsPresent && ImageIdFound == PresentedImageId)
+            {
+                CorrectAnswer = true;
+            }
         }
     }
 }
