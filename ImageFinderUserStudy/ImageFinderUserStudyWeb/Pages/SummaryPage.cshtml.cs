@@ -11,6 +11,8 @@ namespace ImageFinderUserStudyWeb.Pages
         
         private UserSessionInfo UserSession { get; set; }
 
+        public SessionSummary UserSessionSummary { get; private set; }
+
         public SummaryPage(
             UserSessionsManager userSessionsManager
         )
@@ -19,18 +21,20 @@ namespace ImageFinderUserStudyWeb.Pages
         }
         
         public void OnGetSummary(
-            Guid userSessionId
+            Guid userSessionGuid,
+            string imageId
         )
         {
             try
             {
                 System.IO.Directory.CreateDirectory("userSessions");
-                UserSession = _userSessionsManager.UserSessions[userSessionId];
+                UserSession = _userSessionsManager.UserSessions[userSessionGuid];
+                UserSessionSummary = new SessionSummary(UserSession);
                 var filePath = "userSessions/" + UserSession.UserSessionId + ".json";
                 // TODO: We will later move this to DB instead of file output so it can be queried.
                 System.IO.File.WriteAllText(
                     filePath,
-                    JsonConvert.SerializeObject(new SessionSummary(UserSession))
+                    JsonConvert.SerializeObject(UserSessionSummary)
                 );
             }
             catch (KeyNotFoundException e)

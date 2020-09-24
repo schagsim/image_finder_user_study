@@ -59,6 +59,7 @@ namespace ImageFinderUserStudyWeb.Pages
             UserSessionId = userSessionGuid;
             PresentedImageId = userSession.PresentedImageId;
             ImageGalleryMatrix = userSession.PresentedGallery;
+            userSession.GalleryPresentationTimeTicks = DateTime.Now.Ticks;
         }
 
         public IActionResult OnPostImageClick(
@@ -66,8 +67,9 @@ namespace ImageFinderUserStudyWeb.Pages
             string imageId
         )
         {
+            _userSessionsManager.UserSessions[userSessionGuid].GalleryAnswerTimeTicks = DateTime.Now.Ticks;
             // TODO: Here, set the time, set the found image to session, etc.
-            return RedirectToPage("SummaryPage", "Summary", new { userSessionId = userSessionGuid });
+            return RedirectToPage("SummaryPage", "Summary", new { userSessionGuid = userSessionGuid, imageId = imageId });
         }
     }
 }
