@@ -7,6 +7,15 @@
 
 <div class="text-center">
     <h2>Thank you for participating!</h2>
+    <p>It took you @Model.UserSessionSummary.SecondsToRespond seconds to answer.</p>
+    @if (Model.UserSessionSummary.CorrectAnswer)
+    {
+        <p>Your answer was correct.</p>
+    }
+    else
+    {
+        <p>Your answer was incorrect.</p>
+    } 
     <form method="get">
         <button asp-page="Privacy">See what we collect about you</button>
     </form>

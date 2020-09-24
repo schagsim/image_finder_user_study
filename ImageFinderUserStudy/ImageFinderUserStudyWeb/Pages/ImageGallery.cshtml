@@ -8,14 +8,14 @@
 <div class="text-center">
     <p>Find the image or mark it as not present!</p>
     <form method="post" asp-page-handler="ImageClick">
-        <button class="btn btn-default">
+        <button class="btn btn-default" style="border:2px solid black">
             Image is not present.
         </button>
         <input type="hidden" name="userSessionGuid" value="@Model.UserSessionId" />
         <input type="hidden" name="imageId" value="NotPresent" />
     </form>
     
-    <div class="table-wrapper" id="imageGallery" style="overflow:auto;height:@Model.SizeInPixels(Model.GalleryHeightPixels);width:@Model.SizeInPixels(Model.GalleryWidthPixels);margin:auto;">
+    <div class="table-wrapper" id="imageGallery" style="overflow:auto;height:@Model.SizeInPixels(Model.GalleryHeightPixels);width:@Model.SizeInPixels(Model.GalleryWidthPixels+Model.GalleryScrollBarPixels);margin:auto;">
             <table>
                 @for (var row = 0; row < Model.NumberOfRows; row++)
                 {

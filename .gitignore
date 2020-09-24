@@ -355,6 +355,8 @@ ImageFinderUserStudy/ImageFinderUserStudyWeb/wwwroot/Resources/
 
 ImageFinderUserStudy/ImageFinderUserStudyWeb/Resources/
 
+ImageFinderUserStudy/ImageFinderUserStudyWeb/userSessions/
+
 python_scripts/*.txt
 
 python_scripts/test_files/
