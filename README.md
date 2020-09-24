@@ -68,3 +68,36 @@ private string[,] SortBySomething(var args) { ... }
 ```
 To add another sorter, it is suggested to add an enum to the respective service for the sorting type, declare this type in appsettings.json and use switch case to decide which sorter to use according to the settings. This patter can be found with "GalleryType" setting in appsettings.json. Follow this pattern to implement a different sorter.
 To be more object oriented, a sorter class could be added for a given service responsible for different types of sorting.
+
+For example, I could want two types of sorters: Random and Cascade (it doesn't matter what cascade means in this case, it's just an example).
+In LabelsSorterService, I can create enum
+```
+public enum LabelSortersType
+{
+  Random,
+  Cascade
+}
+```
+This enum, I can add to appsettings.json as
+```
+"LabelSorterType": 1
+```
+Which can be translated to `GlobalConfig` in `StartUp` as
+```
+var labelSorterType = int.TryParse(configuration["GallerySettings:LabelSorterType"], out var galleryTypeValue);
+```
+Then, when function
+```
+public SorterOutput Sort (var args) { ... }
+```
+is called, I can do a check inside this function.
+```
+if (GlobalConfig.LabelSorterType == LabelSorterType.Random)
+{
+  sorterOutput = SortByRandom(args);
+}
+else if (GlobalConfig.LabelSorterType == LabelSorterType.Cascade)
+{
+  sorterOutput = SortByCascade(args);
+}
+```
